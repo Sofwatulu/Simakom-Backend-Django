@@ -1,0 +1,8 @@
+misalkan databasenya belum ada, buat databasenya habis itu buat .env dan jalankan npx prisma migrate dev --name create_komputer_table
+npm install (jika belum).
+npx prisma generate (memperbarui Prisma Client).
+npm run dev (menjalankan aplikasi).
+
+npm install nodemailer @types/nodemailer
+otob hteo iocd lpjq
+npm install node-cron @types/node-cron

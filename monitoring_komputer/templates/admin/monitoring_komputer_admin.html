@@ -1,0 +1,88 @@
+{% extends "admin/base_site.html" %} {# Penting: Meng-extend base template admin Django #}
+{% load i18n admin_urls static %} {# Memuat tag dan filter Django admin #}
+
+{% block extrastyle %}
+    {# Memuat CSS bawaan admin untuk forms, dll. #}
+    <link rel="stylesheet" type="text/css" href="{% static 'admin/css/forms.css' %}">
+    {# Gaya kustom minimalis, hanya untuk kelas yang tidak ada di admin default #}
+    <style>
+        .online { color: green; font-weight: bold; }
+        .offline { color: red; font-weight: bold; }
+        .error-message {
+            color: #a94442;
+            background-color: #f2dede;
+            border: 1px solid #ebccd1;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .no-data { text-align: center; color: #6c757d; padding: 20px; }
+        /* Penyesuaian untuk lebar kolom jika diperlukan */
+        /* th:nth-child(1), td:nth-child(1) { width: 20%; } /* Kode Komputer */
+        /* th:nth-child(2), td:nth-child(2) { width: 15%; } /* IP Address */
+        /* th:nth-child(3), td:nth-child(3) { width: 10%; } /* Status */
+        /* th:nth-child(4), td:nth-child(4) { width: 25%; } /* Terakhir Ping */
+        /* th:nth-child(5), td:nth-child(5) { width: 25%; } /* Terakhir Online */
+    </style>
+{% endblock %}
+
+{% block content %} {# Ini adalah blok utama konten di template admin #}
+    <div id="content-main">
+        {% if pesan_kesalahan_pemantauan %}
+            <p class="error-message">
+                <strong>Kesalahan Pemantauan:</strong> {{ pesan_kesalahan_pemantauan }}
+                <br>Mohon pastikan sistem pemantauan Node.js (yang Anda jalankan dengan `npm run dev`) sedang aktif di `http://localhost:3000`.
+            </p>
+        {% else %}
+            {% if daftar_komputer_online %}
+                {# Menggunakan struktur "module" standar Django admin #}
+                <div class="module filtered"> {# "filtered" bisa ditambahkan jika ada filter, jika tidak bisa dihilangkan #}
+                    <h2>{% trans "Daftar Komputer" %}</h2>
+                    <div class="module-body">
+                        <div class="results"> {# Kelas "results" biasanya digunakan untuk tabel hasil #}
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>{% trans "Kode Komputer" %}</th>
+                                        <th>{% trans "IP Address" %}</th>
+                                        <th>{% trans "Status" %}</th>
+                                        <th>{% trans "Terakhir Ping" %}</th>
+                                        <th>{% trans "Terakhir Online" %}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for komputer in daftar_komputer_online %}
+                                        <tr class="{% cycle 'row1' 'row2' %}"> {# Menggunakan cycle untuk striping baris #}
+                                            <td>{{ komputer.kodeKomputer }}</td>
+                                            <td>{{ komputer.ipAddress }}</td>
+                                            <td class="{% if komputer.online %}online{% else %}offline{% endif %}">
+                                                {% if komputer.online %}{% trans "Online" %}{% else %}{% trans "Offline" %}{% endif %}
+                                            </td>
+                                            <td>
+                                                {% if komputer.lastPing %}
+                                                    {{ komputer.lastPing|date:"d M Y H:i:s" }}
+                                                {% else %}
+                                                    {% trans "N/A" %}
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {% if komputer.lastOnline %}
+                                                    {{ komputer.lastOnline|date:"d M Y H:i:s" }}
+                                                {% else %}
+                                                    {% trans "N/A" %}
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div> {# Tutup div.results #}
+                    </div> {# Tutup div.module-body #}
+                </div> {# Tutup div.module #}
+            {% else %}
+                <p class="no-data">{% trans "Tidak ada data status komputer yang ditemukan." %}</p>
+            {% endif %}
+        {% endif %}
+    </div> {# Tutup div#content-main #}
+{% endblock %}

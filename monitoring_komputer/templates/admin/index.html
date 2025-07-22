@@ -1,0 +1,18 @@
+{% extends "admin/index.html" %} {# Meng-extend index template admin bawaan #}
+{% load i18n static %}
+
+{% block content %}
+    {{ block.super }} {# Menampilkan konten bawaan dari admin/index.html #}
+
+    <div class="app-inventory module"> {# Gunakan nama aplikasi Anda #}
+        <div class="module-body">
+            <table class="dashboard-table">
+                <caption>{% trans "Pemantauan Komputer" %}</caption>
+                <tr>
+                    <th scope="row"><a href="{% url 'admin:pemantauan_komputer' %}">{% trans "Lihat Status Pemantauan Komputer" %}</a></th>
+                    
+                </tr>
+            </table>
+        </div>
+    </div>
+{% endblock %}
