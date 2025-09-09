@@ -1,1 +1,0 @@
-# Software Pendeteksi Komputer
